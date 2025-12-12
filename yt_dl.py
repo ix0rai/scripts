@@ -76,4 +76,4 @@ if len(sys.argv) == required_args + 1:
         print("", *files, sep="\n\t")
 else:
     print("wrong number of arguments!")
-    print("expected: " + str(required_args - 1) + ", received: " + str(len(sys.argv) - 1))
+    print("expected: " + str(required_args) + ", received: " + str(len(sys.argv) - 1))
