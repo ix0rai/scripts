@@ -8,10 +8,10 @@ from contextlib import chdir
 import time
 from typing import Callable
 
-animation = (".  ", ".. ", "...")
+animation = ("   ", ".  ", ".. ", "...") # all strings must have the same number of chars!
 
 speed = 0.5
-reverser = ''.join('\b' for c in animation)
+reverser = ''.join('\b' * len(animation[0]))
 count = 0
 
 def animate(text: str) -> None:
