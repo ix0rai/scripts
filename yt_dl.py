@@ -30,12 +30,12 @@ def animate(text: str) -> None:
         count += 1
 
 def start_animation(text: str, process: Callable[[], None]) -> None:
+    global count
     thread = threading.Thread(target=lambda: animate(text), daemon=True)
     thread.start()
     process()
-    global count
     time.sleep(speed)
-    count = -1
+    count = -999
     sys.stdout.write(reverser + "\n")
     sys.stdout.flush()
 
@@ -55,12 +55,10 @@ if len(sys.argv) == required_args + 1:
     os.makedirs(path, exist_ok=True)
 
     with chdir(path):
-        start_animation("downloading", lambda: run_command(["yt-dlp", "-x", "--cookies-from-browser", "firefox", sys.argv[3]]))
+        start_animation("downloading", lambda: run_command(["yt-dlp", "-x", "--cookies-from-browser", "firefox", "--remote-components", "ejs:github", sys.argv[3]]))
         print("finished download!")
 
-        files = os.listdir(".")
-
-        for file in files:
+        for file in os.listdir("."):
             if not file.endswith(expected_extension):
                 new_file_name = re.search("[^.]*", file).group(0) + expected_extension
 
@@ -73,7 +71,7 @@ if len(sys.argv) == required_args + 1:
                 print("no conversion required for: " + file)
 
         print("success! downloaded:", end="")
-        print("", *files, sep="\n\t")
+        print("", *os.listdir("."), sep="\n\t")
 else:
     print("wrong number of arguments!")
     print("expected: " + str(required_args) + ", received: " + str(len(sys.argv) - 1))
