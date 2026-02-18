@@ -11,7 +11,7 @@ def run_command(args: list[str]) -> None:
         stderr=subprocess.DEVNULL
     )
 
-output = os.path.join(os.getcwd(), "output_old")
+output = os.path.join(os.getcwd(), "output")
 stripped_path = "/media/music/"
 
 # copy music folder to output
@@ -98,6 +98,9 @@ for artist in artists:
                          "-i", file_path,
                          "-id3v2_version", "3",
                          temp_file_path])
+
+            if os.path.isfile(new_file_path):
+                os.remove(new_file_path)
 
             run_command(["ffmpeg",
                          "-i", temp_file_path,
