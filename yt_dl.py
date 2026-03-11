@@ -1,12 +1,12 @@
 #!/usr/bin/python
-import subprocess
 import sys
 import os
-import re
 import threading
 from contextlib import chdir
 import time
 from typing import Callable
+
+from shared import convert_dir, run_command
 
 animation = ("   ", ".  ", ".. ", "...") # all strings must have the same number of chars!
 
@@ -39,13 +39,6 @@ def start_animation(text: str, process: Callable[[], None]) -> None:
     sys.stdout.write(reverser + "\n")
     sys.stdout.flush()
 
-def run_command(args: list[str]) -> None:
-    subprocess.run(
-        args,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
-
 required_args = 3
 music_path = "/media/music"
 expected_extension = ".m4a"
@@ -56,21 +49,12 @@ if len(sys.argv) == required_args + 1:
 
     with chdir(path):
         start_animation("downloading", lambda: run_command(["yt-dlp", "-x", "--cookies-from-browser", "firefox", "--remote-components", "ejs:github", sys.argv[3]]))
-        print("finished download!")
 
-        for file in os.listdir("."):
-            if not file.endswith(expected_extension):
-                new_file_name = re.search("[^.]*", file).group(0) + expected_extension
+        print("downloaded " + str(len(os.listdir("."))) + " songs!")
 
-                print("converting: " + file)
-                run_command(["ffmpeg", "-i", file, new_file_name])
+        convert_dir(".", expected_extension, "\t")
 
-                print("removing: " + file)
-                os.remove(file)
-            else:
-                print("no conversion required for: " + file)
-
-        print("success! downloaded:", end="")
+        print("success! results:", end="")
         print("", *os.listdir("."), sep="\n\t")
 else:
     print("wrong number of arguments!")

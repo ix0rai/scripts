@@ -4,12 +4,7 @@ import re
 import subprocess
 import shutil
 
-def run_command(args: list[str]) -> None:
-    subprocess.run(
-        args,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+from shared import run_command
 
 output = os.path.join(os.getcwd(), "output")
 stripped_path = "/media/music/"
